@@ -4,7 +4,6 @@ import Main from "./Main.js";
 import Footer from "./Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
-import "../index.css";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =

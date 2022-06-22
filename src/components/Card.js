@@ -1,28 +1,28 @@
 import React from "react";
 
-function Card(props) {
+function Card({card, onCardClick}) {
   function handleClick() {
-    props.onCardClick(props.card);
+    onCardClick(card);
   }
 
   return (
     <div className="element">
       <img
         className="element__image"
-        src={props.card.link}
-        alt=" "
+        src={card.link}
+        alt={card.name}
         type="button"
         onClick={handleClick}
       />
       <div className="element__title-block">
-        <h2 className="element__title">{props.card.name}</h2>
+        <h2 className="element__title">{card.name}</h2>
         <div className="element__like">
           <button
             className="element__heart"
             type="button"
             aria-label="Нравится"
           ></button>
-          <p className="element__like-counter">{props.card.likes.length}</p>
+          <p className="element__like-counter">{card.likes.length}</p>
         </div>
       </div>
       <button
