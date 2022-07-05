@@ -6,7 +6,7 @@ class Api {
 
   _getResponseData(res) {
     if (res.ok) {
-      return Promise.resolve(res.json());
+      return res.json();
     }
     return Promise.reject(`Ошибка: ${res.status}`);
   }
@@ -16,8 +16,9 @@ class Api {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
-        name: newCardData.name,
-        link: newCardData.link,
+        // name: newCardData.name,
+        // link: newCardData.link,
+        newCardData
       }),
     }).then((res) => {
       return this._getResponseData(res);
