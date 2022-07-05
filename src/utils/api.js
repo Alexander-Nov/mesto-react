@@ -25,12 +25,13 @@ class Api {
     });
   }
 
-  deleteCard(cardId, card) {
-    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+  deleteCard(card) {
+    return fetch(`${this._baseUrl}/cards/${card._id}`, {
       method: "DELETE",
       headers: this._headers,
     }).then((res) => {
-      return this._getResponseData(res, card);
+      // return this._getResponseData(res, card);
+      return this._getResponseData(res);
     });
   }
 
@@ -58,6 +59,15 @@ class Api {
         name: newData["input-name"],
         about: newData["input-prof"],
       }),
+    }).then((res) => {
+      return this._getResponseData(res);
+    });
+  }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+      method: `${isLiked ? "PUT" : "DELETE"}`,
+      headers: this._headers,
     }).then((res) => {
       return this._getResponseData(res);
     });

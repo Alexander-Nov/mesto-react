@@ -1,19 +1,32 @@
 import React from "react";
 import { api } from "../utils/api";
 import Card from "./Card.js";
+import { CurrentUserContext } from "../contexts/currentUserContext";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState("");
-  const [userDescription, setUserDescription] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
   const [cards, setCards] = React.useState([]);
+  const currentUser = React.useContext(CurrentUserContext);
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id); // проверяем, есть ли уже лайк на этой карточке
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, !isLiked)
+    .then((newCard) => {
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    });
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card)
+    .then(() => {
+      setCards((state) => state.filter((c) => !(c._id === card._id)));
+  });
+  }
 
   React.useEffect(() => {
-    Promise.all([api.getUserData(), api.getInitialCards()])
-      .then(([res, resCardsList]) => {
-        setUserName(res.name);
-        setUserDescription(res.about);
-        setUserAvatar(res.avatar);
+    api.getInitialCards()
+      .then((resCardsList) => {
         setCards(resCardsList);
       })
       .catch((err) => {
@@ -26,13 +39,13 @@ function Main(props) {
       <section className="profile">
         <button
           className="profile__avatar"
-          style={{ backgroundImage: `url(${userAvatar})` }}
+          style={{ backgroundImage: `url(${currentUser.avatar})` }}
           type="button"
           onClick={props.onEditAvatar}
         ></button>
         <div className="profile__info">
           <div className="profile__top-line">
-            <h1 className="profile__name">{userName}</h1>
+            <h1 className="profile__name">{currentUser.name}</h1>
             <button
               className="profile__edit-button"
               type="button"
@@ -40,7 +53,7 @@ function Main(props) {
               aria-label="Редактировать"
             ></button>
           </div>
-          <p className="profile__description">{userDescription}</p>
+          <p className="profile__description">{currentUser.about}</p>
         </div>
         <button
           className="profile__add-button"
@@ -55,7 +68,9 @@ function Main(props) {
           <Card
           key={cardItem._id}
           card={cardItem}
-          onCardClick={props.onCardClick} />
+          onCardClick={props.onCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}/>
         ))}
       </section>
     </main>
