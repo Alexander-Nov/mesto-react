@@ -65,24 +65,6 @@ class Api {
     });
   }
 
-  // addLike(cardId) {
-  //   return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-  //     method: "PUT",
-  //     headers: this._headers,
-  //   }).then((res) => {
-  //     return this._getResponseData(res);
-  //   });
-  // }
-
-  // deleteLike(cardId) {
-  //   return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-  //     method: "DELETE",
-  //     headers: this._headers,
-  //   }).then((res) => {
-  //     return this._getResponseData(res);
-  //   });
-  // }
-
   updateAvatar(newData) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",

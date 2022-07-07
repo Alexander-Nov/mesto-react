@@ -4,7 +4,7 @@ import Main from "./Main.js";
 import Footer from "./Footer.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
-import PopupWithForm from "./PopupWithForm.js";
+import ConfirmDeletionPopup from "./ConfirmDeletionPopup.js";
 import ImagePopup from "./ImagePopup.js";
 import { api } from "../utils/api";
 import { CurrentUserContext } from "../contexts/currentUserContext";
@@ -16,11 +16,14 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
+  const [isConfirmDeletionPopupOpen, setIsConfirmDeletionPopupOpen] =
+    React.useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
+  const [willBeDeletedCard, setWillBeDeletedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
-
   const [cards, setCards] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id); // проверяем, есть ли уже лайк на этой карточке
@@ -30,15 +33,27 @@ function App() {
     });
   }
 
-  function handleCardDelete(card) {
+  function handleConfirmedDeletion(card) {
+    setIsLoading(true);
     api
       .deleteCard(card)
       .then(() => {
         setCards((state) => state.filter((c) => !(c._id === card._id)));
       })
+      .then(() => {
+        closeAllPopups();
+      })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
+  }
+
+  function handleCardDelete(card) {
+    setWillBeDeletedCard(card);
+    setIsConfirmDeletionPopupOpen(true);
   }
 
   React.useEffect(() => {
@@ -80,6 +95,8 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
+    setIsConfirmDeletionPopupOpen(false);
+    setWillBeDeletedCard({});
     setSelectedCard({});
   };
 
@@ -89,6 +106,7 @@ function App() {
   };
 
   const handleUpdateUser = (newUserData) => {
+    setIsLoading(true);
     api
       .setUserInfo(newUserData)
       .then((res) => {
@@ -97,10 +115,14 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   const handleUpdateAvatar = (avatar) => {
+    setIsLoading(true);
     api
       .updateAvatar(avatar)
       .then((res) => {
@@ -109,10 +131,14 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   const handleAddPlaceSubmit = (newCard) => {
+    setIsLoading(true);
     api
       .postNewCard(newCard)
       .then((card) => {
@@ -121,6 +147,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -143,26 +172,29 @@ function App() {
 
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
+          isLoading={isLoading}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
 
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
+          isLoading={isLoading}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
         />
 
-        <PopupWithForm
-          title="Вы уверены?"
-          name="confirm"
-          isOpen={false}
+        <ConfirmDeletionPopup
+          isOpen={isConfirmDeletionPopupOpen}
+          isLoading={isLoading}
           onClose={closeAllPopups}
-          children={<></>}
+          card={willBeDeletedCard}
+          onDeletionSubmit={handleConfirmedDeletion}
         />
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
+          isLoading={isLoading}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />

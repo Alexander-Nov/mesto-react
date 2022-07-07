@@ -21,7 +21,7 @@ function PopupWithForm(props) {
         <fieldset className="popup__fieldset">
           {props.children}
           <button type="submit" className="popup__submit-button">
-            Сохранить
+            {props.buttonText}
           </button>
         </fieldset>
       </form>
