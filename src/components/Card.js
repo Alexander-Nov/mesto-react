@@ -21,7 +21,6 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   }
 
   function handleDeleteClick() {
-    console.log(card);
     onCardDelete(card);
   }
 

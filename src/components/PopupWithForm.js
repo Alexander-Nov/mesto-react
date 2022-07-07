@@ -9,6 +9,7 @@ function PopupWithForm(props) {
     >
       <form
         className={`popup__form popup__form_type_${props.name}" name="${props.name}" novalidate`}
+        onSubmit={props.onSubmit}
       >
         <button
           className="popup__close-button"

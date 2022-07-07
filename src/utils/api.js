@@ -15,11 +15,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
       headers: this._headers,
-      body: JSON.stringify({
-        // name: newCardData.name,
-        // link: newCardData.link,
-        newCardData
-      }),
+      body: JSON.stringify(newCardData),
     }).then((res) => {
       return this._getResponseData(res);
     });
@@ -30,7 +26,6 @@ class Api {
       method: "DELETE",
       headers: this._headers,
     }).then((res) => {
-      // return this._getResponseData(res, card);
       return this._getResponseData(res);
     });
   }
@@ -51,14 +46,11 @@ class Api {
     });
   }
 
-  replaceUSerData(newData) {
+  setUserInfo(newData) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: this._headers,
-      body: JSON.stringify({
-        name: newData["input-name"],
-        about: newData["input-prof"],
-      }),
+      body: JSON.stringify(newData),
     }).then((res) => {
       return this._getResponseData(res);
     });
@@ -73,23 +65,23 @@ class Api {
     });
   }
 
-  addLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: "PUT",
-      headers: this._headers,
-    }).then((res) => {
-      return this._getResponseData(res);
-    });
-  }
+  // addLike(cardId) {
+  //   return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+  //     method: "PUT",
+  //     headers: this._headers,
+  //   }).then((res) => {
+  //     return this._getResponseData(res);
+  //   });
+  // }
 
-  deleteLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then((res) => {
-      return this._getResponseData(res);
-    });
-  }
+  // deleteLike(cardId) {
+  //   return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+  //     method: "DELETE",
+  //     headers: this._headers,
+  //   }).then((res) => {
+  //     return this._getResponseData(res);
+  //   });
+  // }
 
   updateAvatar(newData) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
